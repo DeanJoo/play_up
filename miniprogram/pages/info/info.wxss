@@ -1,0 +1,26 @@
+/* pages/info/info.wxss */
+.weui-form-preview__label:first-child {
+  height: 80rpx;
+}
+
+view .weui-form-preview__value {
+  color: #000;
+}
+
+.controls {
+  position: absolute;
+  left: 5px;
+  bottom: 5px;
+  height: 35px;
+  display: flex;
+}
+.location,.route {
+  flex: 1;
+  height: 100%;
+}
+.img {
+  width: 30px;
+  height: 30px;
+  margin: 5px auto;
+  color: #00f;
+}

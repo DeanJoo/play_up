@@ -1,0 +1,12 @@
+/* pages/add/add.wxss */
+.textarea-height {
+  height: 4.5em;
+}
+
+.searchbar-result{
+  margin-top: 0;
+  font-size: 14px;
+}
+.searchbar-result:before{
+  display: none;
+}

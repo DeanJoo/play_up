@@ -1,0 +1,75 @@
+<!--pages/info/info.wxml-->
+<view class='page'>
+  <view class='page__hd'>
+    <view class='page__title'>{{title}}</view>
+    <view class='page__desc'>{{content}}</view>
+  </view>
+
+  <view class='page__bd'>
+    <map id='address' class='map-full' longitude='{{location[0]}}' latitude='{{location[1]}}' markers='{{markers}}' bindtap='openMap'>
+      <!-- <cover-view class='controls'>
+        <cover-view class='location' bindtap='openMap'>
+          <cover-image class='img' src='/images/navigation.png'/>
+        </cover-view>
+      </cover-view> -->
+    </map>
+
+    <view class='weui-form-preview'>
+      <view class='weui-form-preview__hd'>
+        <view class='weui-form-preview__item'>
+          <view class='weui-form-preview__label'>
+            <image class="userinfo-avatar" src='{{sponsor.avatarUrl}}' mode='cover'></image>
+          </view>
+          <view class='weui-form-preview__value'>{{sponsor.nickName}}</view>
+        </view>
+      </view>
+
+      <view class='weui-form-preview__bd'>
+        <view class='weui-form-preview__item'>
+          <view class='weui-form-preview__label'>地点</view>
+          <view class='weui-form-preview__value'>{{place}}</view>
+        </view>
+
+        <view class='weui-form-preview__item'>
+          <view class='weui-form-preview__label'>地址</view>
+          <view class='weui-form-preview__value'>{{address}}</view>
+        </view>
+
+        <view class='weui-form-preview__item'>
+          <view class='weui-form-preview__label'>日期</view>
+          <view class='weui-form-preview__value'>{{date}}</view>
+        </view>
+
+        <view class='weui-form-preview__item'>
+          <view class='weui-form-preview__label'>时间</view>
+          <view class='weui-form-preview__value'>{{time}}</view>
+        </view>
+
+        <view class='weui-form-preview__item'>
+          <view class='weui-form-preview__label'>经费</view>
+          <view class='weui-form-preview__value'>{{funds}}</view>
+        </view>
+
+        <view class='weui-form-preview__item'>
+          <view class='weui-form-preview__label'>参与者</view>
+          <view class='weui-form-preview__value'>
+            <image wx:for='{{guests}}' wx:key='index' class="userinfo-avatar" src='{{item.avatarUrl}}' mode="cover"></image>
+          </view>
+        </view>
+      </view>
+      
+      <view class='weui-form-preview__ft' wx:if='{{isSponsor}}'>
+        <button class='weui-form-preview__btn weui-form-preview__btn_primary' type='primary' open-type='share'>发帖</button>
+      </view>
+
+      <view class='weui-form-preview__ft' wx:elif='{{joined || refused}}'>
+        <button class='weui-form-preview__btn weui-form-preview__btn_primary' type='primary' open-type='share'>告诉他/她？</button>
+      </view>
+
+      <view class='weui-form-preview__ft' wx:else>
+        <view class='weui-form-preview__btn weui-form-preview__btn_default' hover-class='weui-form-preview__btn_active' bindtap='refuseIt'>拒接</view>
+        <view class='weui-form-preview__btn weui-form-preview__btn_primary' hover-class='weui-form-preview__btn_active' bindtap='joinIt'>加入</view>
+      </view>
+    </view>
+  </view>
+</view>

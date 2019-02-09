@@ -1,0 +1,125 @@
+<!--pages/add/add.wxml-->
+<view class='page'>
+  <view class='page__hd'>
+    <view class="page__title">发请帖</view>
+  </view>
+
+  <view class='page__bd'>
+    <view class="weui-toptips weui-toptips_warn" wx:if="{{showTopTips}}">{{topTips}}</view>
+    
+    <form bindsubmit='saveCard'>
+      <view class='weui-cells__title'>标题</view>
+      <view class='weui-cells weui-cells_after-title'>
+        <view class='weui-cell weui-cell_input'>
+          <view class='weui-cell__bd'>
+            <input class="weui-input" name='title' value='{{title}}' maxlength='25' disabled='{{cardSaved}}'/>
+          </view>
+        </view>
+      </view>
+
+      <view class='weui-cells__title'>活动内容</view>
+      <view class='weui-cells weui-cells_after-title'>
+        <view class='weui-cell'>
+          <view class='weui-cell__bd'>
+            <textarea class='weui-textarea textarea-height' name='content' value='{{content}}' maxlength='{{contentTotal}}' bindinput='bindContentChange' disabled='{{cardSaved}}'/>
+            <view class='weui-textarea-counter'>{{contentCount}}/{{contentTotal}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view class='weui-search-bar'>
+        <view class='weui-search-bar__form'>
+          <view class='weui-search-bar__box'>
+            <icon class='weui-icon-search_in-box' type='search' size='14'></icon>
+            <input class='weui-search-bar__input' confirm-type='search' placeholder='搜索' value='{{addressKey}}' focus='{{addressSearchShowed}}' bindinput='typingAddress' bindconfirm='searchAddress'></input>
+            <view class='weui-icon-clear' wx:if='{{addressKey.length > 0}}' bindtap='clearAddressKey'>
+              <icon type='clear' size='14'></icon>
+            </view>
+          </view>
+          <label class='weui-search-bar__label' hidden='{{addressSearchShowed}}' bindtap='showAddressSearch'>
+            <icon class='weui-icon-search' type='search' size='14'></icon>
+            <view class='weui-search-bar__text'>搜索</view>
+          </label>
+        </view>
+        <view class='weui-search-bar__cancel-btn' hidden='{{!addressSearchShowed}}' bindtap='hideAddressSearch'>取消</view>
+      </view>
+      <view class='weui-cells searchbar-result' wx:if='{{addressSearchShowed}}'>
+        <view class='weui-cell' hover-class='weui-cell_active' wx:for='{{addressTips}}' wx:key='id'>
+          <view class='weui-cell__bd'>
+            <view bindtap='selectAddress' data-index='{{index}}'>{{item.name}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view class='weui-cells weui-cells_after-title'>
+        <map id='address' class='map-full' longitude='{{location[0]}}' latitude='{{location[1]}}' markers='{{markers}}' bindmarkertap='selectMarker'></map>
+      </view>
+
+      <view class='weui-cells weui-cells_after-title'>
+        <view class='weui-cell weui-cell_select'>
+          <view class='weui-cell__hd weui-cell__hd_in-select-after'>
+            <view class='weui-label'>地点</view>
+          </view>
+          <view class='weui-cell__bd'>
+            <input class='weui-input' name='place' placeholder='地点' value='{{place}}' maxlength='100'  disabled='{{cardSaved}}'/>
+          </view>
+          <view class='weui-cell__ft' wx:if='{{commonPlaces.length > 0}}'>
+            <view class='btn-select' bindtap='showCommon'  disabled='{{cardSaved}}'>
+              <view class='weui-select weui-select_in-select-after'></view>
+            </view>
+          </view>
+        </view>
+
+        <view class='weui-cell weui-cell_input'>
+          <view class='weui-cell__hd'>
+            <view class='weui-label'>地址</view>
+          </view>
+          <view class='weui-cell__bd'>
+            <input class='weui-input' name='address' placeholder='地址' value='{{address}}' maxlength='200'  disabled='{{cardSaved}}'/>
+          </view>
+        </view>
+
+        <view class='weui-cell weui-cell_input'>
+          <view class='weui-cell__hd'>
+            <view class='weui-label'>日期</view>
+          </view>
+          <view class='weui-cell__bd'>
+            <picker mode='date' name='date' value='{{currentDate}}' start='{{startDate}}' bindchange='bindDateChange' disabled='{{cardSaved}}'>
+              <view class='weui-input'>{{currentDate}}</view>
+            </picker>
+          </view>
+        </view>
+
+        <view class='weui-cell weui-cell_input'>
+          <view class='weui-cell__hd'>
+            <view class='weui-label'>时间</view>
+          </view>
+          <view class='weui-cell__bd'>
+            <picker mode='time' name='time' value='{{currentTime}}' bindchange='bindTimeChange' disabled='{{cardSaved}}'>
+              <view class='weui-input'>{{currentTime}}</view>
+            </picker>
+          </view>
+        </view>
+
+        <view class='weui-cell weui-cell_select'>
+          <view class='weui-cell__hd weui-cell__hd_in-select-after'>
+            <view class='weui-label'>经费</view>
+          </view>
+          <view class='weui-cell__bd'>
+            <picker name='funds' value='{{fundsIndex}}' range='{{fundsOptions}}' bindchange='bindFundsChange' disabled='{{cardSaved}}'>
+              <view class='weui-select weui-select_in-select-after'>{{fundsOptions[fundsIndex]}}</view>
+            </picker>
+          </view>
+        </view>
+      </view>
+
+      <view class='weui-btn-area' wx:if='{{!cardSaved}}'>
+        <button class='weui-btn' type='primary' formType='submit'>完成</button>
+      </view>
+      
+      <view class='weui-btn-area' wx:else>
+        <button class='weui-btn' type='primary' open-type='share'>发帖</button>
+      </view>
+    </form>
+  </view>
+</view>
