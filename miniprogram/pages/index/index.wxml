@@ -40,4 +40,10 @@
     </navigator>
   </view>
 
+  <view class='uploader'>
+    <navigator url="/pages/accept/accept?id=1" open-type="navigate" class="uploader-text">
+      <text>测试卡片</text>
+    </navigator>
+  </view>
+
 </view>

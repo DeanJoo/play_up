@@ -1,0 +1,23 @@
+<!--pages/accept/accept.wxml-->
+<view class='page'>
+  <view class='page__hd'>
+    <view class="page__title">授权</view>
+    <view class='page__desc'>
+    吾等需要获取君之昵称与头像，请君赋予吾等神圣的权利
+    </view>
+  </view>
+
+  <view class='page__bd'>
+    <view class='weui-btn-area'>
+      <button class='weui-btn' type='primary' open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo" disabled='{{accepted}}'>获取用户信息</button>
+    </view>
+
+    <view class='weui-cells' wx:if='{{msg.length > 1}}'>
+      <view class='weui-cell'>
+        <view class='weui-cell__bd'>
+          <p class='page__desc'>{{msg}}</p>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

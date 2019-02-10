@@ -2,6 +2,12 @@
  * 小程序配置文件
  */
 var config = {
+  scope: {
+    userInfo: 'scope.userInfo'
+  },
+  storage: {
+    userInfo: 'user_info'
+  },
   services: {
     login: 'login',
     home: 'list',
@@ -9,7 +15,9 @@ var config = {
     addCard: 'add'
   },
   pages: {
-    addCard: '/pages/add/add'
+    home: '/pages/list/list',
+    addCard: '/pages/add/add',
+    accept: 'pages/accept/accept'
   },
   state: {
     success: 0,

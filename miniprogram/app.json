@@ -2,7 +2,8 @@
   "pages": [
     "pages/list/list",
     "pages/info/info",
-    "pages/add/add"
+    "pages/add/add",
+    "pages/accept/accept"
   ],
   "window": {
     "backgroundColor": "#66f9cf",
@@ -10,5 +11,10 @@
     "navigationBarBackgroundColor": "#333",
     "navigationBarTitleText": "耍起来",
     "navigationBarTextStyle": "white"
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "您的位置信息将用于聚会地点导航及周边地点搜索。"
+    }
   }
 }

@@ -9,52 +9,31 @@ App({
    */
   onLaunch (options) {
     let app = this
+    let opts = []
+    for (let k in options.query) {
+      opts.push([k, options.query[k]].join('='))
+    }
+    app.homePage = '/' + options.path + (opts.length == 0 ? '' : ('?' + opts.join('&')))
+
     wx.cloud.init()
-    let userInfo = wx.getStorageSync('user_info')
-    if (userInfo) {
+    let userInfo = wx.getStorageSync(config.storage.userInfo)
+    if (userInfo !== '') {
       app.setUserInfo(userInfo)
     } else {
-      wx.cloud.callFunction({
-        name: config.services.login
-      }).then(res => {
-        let openId = res.result.openId
-        let colName = config.db.userInfo
-        const db = wx.cloud.database()
-        db.collection(colName).where({
-          _openid: openId
-        }).get().then(res => {
-          if (res.data.length === 0) {
-            wx.getUserInfo({
-              success: res => {
-                let user = {
-                  nickName: res.userInfo.nickName,
-                  avatarUrl: res.userInfo.avatarUrl
-                }
-
-                db.collection(colName).add({
-                  data: user
-                }).then(res => {
-                  user.openId = openId
-                  app.saveUserInfo(user)
-                })
-              },
-              fail: err => {
-                console.log(err)
-              }
-            })
-            
-          } else {
-            let data = res.data[0]
-            let user = {
-              openId: data._openid,
-              nickName: data.nickName,
-              avatarUrl: data.avatarUrl
-            }
-            app.saveUserInfo(user)
-          }
-        })
+      wx.reLaunch({
+        url: '/pages/accept/accept',
       })
     }
+  },
+
+  /**
+   * 授权后返回初始页面
+   */
+  goBack () {
+    let app = this
+    wx.reLaunch({
+      url: app.homePage,
+    })
   },
 
   /**
