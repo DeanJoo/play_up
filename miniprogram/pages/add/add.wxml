@@ -1,7 +1,7 @@
 <!--pages/add/add.wxml-->
 <view class='page'>
   <view class='page__hd'>
-    <view class="page__title">发请帖</view>
+    <view class="page__title">{{isBeggar ? '请求贴' : '发请帖'}}</view>
   </view>
 
   <view class='page__bd'>
@@ -12,22 +12,22 @@
       <view class='weui-cells weui-cells_after-title'>
         <view class='weui-cell weui-cell_input'>
           <view class='weui-cell__bd'>
-            <input class="weui-input" name='title' value='{{title}}' maxlength='25' disabled='{{cardSaved}}'/>
+            <input class="weui-input" name='title' value='{{title}}' maxlength='25' disabled='{{cardSaved}}' bindinput='bindTitleChange'/>
           </view>
         </view>
       </view>
 
-      <view class='weui-cells__title'>活动内容</view>
+      <view class='weui-cells__title'>{{isBeggar ? '请求' : '活动'}}内容</view>
       <view class='weui-cells weui-cells_after-title'>
         <view class='weui-cell'>
           <view class='weui-cell__bd'>
-            <textarea class='weui-textarea textarea-height' name='content' value='{{content}}' maxlength='{{contentTotal}}' bindinput='bindContentChange' disabled='{{cardSaved}}'/>
+            <textarea class='weui-textarea textarea-height' name='content' value='{{content}}' maxlength='{{contentTotal}}' bindinput='bindContentChange' disabled='{{cardSaved}}' placeholder='{{isBeggar ? "温情提示：姿态很重要！" : ""}}'/>
             <view class='weui-textarea-counter'>{{contentCount}}/{{contentTotal}}</view>
           </view>
         </view>
       </view>
 
-      <view class='weui-search-bar'>
+      <view class='weui-search-bar' wx:if='{{!isBeggar}}'>
         <view class='weui-search-bar__form'>
           <view class='weui-search-bar__box'>
             <icon class='weui-icon-search_in-box' type='search' size='14'></icon>
@@ -36,27 +36,29 @@
               <icon type='clear' size='14'></icon>
             </view>
           </view>
-          <label class='weui-search-bar__label' hidden='{{addressSearchShowed}}' bindtap='showAddressSearch'>
-            <icon class='weui-icon-search' type='search' size='14'></icon>
-            <view class='weui-search-bar__text'>搜索</view>
-          </label>
         </view>
-        <view class='weui-search-bar__cancel-btn' hidden='{{!addressSearchShowed}}' bindtap='hideAddressSearch'>取消</view>
+        <view class='weui-search-bar__search-btn' bindtap='searchAddress'>搜索</view>
       </view>
-      <view class='weui-cells searchbar-result' wx:if='{{addressSearchShowed}}'>
-        <view class='weui-cell' hover-class='weui-cell_active' wx:for='{{addressTips}}' wx:key='id'>
+      <view class='weui-cells searchbar-result' wx:if='{{!isBeggar && addressTips.length}}'>
+        <view class='weui-cell' hover-class='weui-cell_active' wx:for='{{addressTips}}' wx:key='id' hidden='{{!showAddressList}}'>
           <view class='weui-cell__bd'>
             <view bindtap='selectAddress' data-index='{{index}}'>{{item.name}}</view>
           </view>
         </view>
+        <view class='weui-cell' hover-class='weui-cell_active'>
+          <view class='weui-cell__bd'>
+            <view class='text-center iconfont {{showAddressList ? "icon-shouqi" : "icon-zhankai"}}' bindtap='switchAddressList'>
+              {{showAddressList ? '收起' : '展开'}}
+            </view>
+          </view>
+        </view>
       </view>
-
-      <view class='weui-cells weui-cells_after-title'>
+      <view class='weui-cells weui-cells_after-title' wx:if='{{!isBeggar}}'>
         <map id='address' class='map-full' longitude='{{location[0]}}' latitude='{{location[1]}}' markers='{{markers}}' bindmarkertap='selectMarker'></map>
       </view>
 
       <view class='weui-cells weui-cells_after-title'>
-        <view class='weui-cell weui-cell_select'>
+        <view class='weui-cell weui-cell_select' wx:if='{{!isBeggar}}'>
           <view class='weui-cell__hd weui-cell__hd_in-select-after'>
             <view class='weui-label'>地点</view>
           </view>
@@ -70,7 +72,7 @@
           </view>
         </view>
 
-        <view class='weui-cell weui-cell_input'>
+        <view class='weui-cell weui-cell_input' wx:if='{{!isBeggar}}'>
           <view class='weui-cell__hd'>
             <view class='weui-label'>地址</view>
           </view>
@@ -84,13 +86,13 @@
             <view class='weui-label'>日期</view>
           </view>
           <view class='weui-cell__bd'>
-            <picker mode='date' name='date' value='{{currentDate}}' start='{{startDate}}' bindchange='bindDateChange' disabled='{{cardSaved}}'>
-              <view class='weui-input'>{{currentDate}}</view>
+            <picker mode='date' name='date' value='{{currentDate}}' start='{{startDate}}' bindchange='bindDateChange' disabled='{{cardSaved || isTreat || isBeggar}}'>
+              <view class='weui-input'>{{isBeggar ? '今儿' : currentDate}}</view>
             </picker>
           </view>
         </view>
 
-        <view class='weui-cell weui-cell_input'>
+        <view class='weui-cell weui-cell_input' wx:if='{{!isBeggar}}'>
           <view class='weui-cell__hd'>
             <view class='weui-label'>时间</view>
           </view>
@@ -106,14 +108,19 @@
             <view class='weui-label'>经费</view>
           </view>
           <view class='weui-cell__bd'>
-            <picker name='funds' value='{{fundsIndex}}' range='{{fundsOptions}}' bindchange='bindFundsChange' disabled='{{cardSaved}}'>
+            <picker name='funds' value='{{fundsIndex}}' range='{{fundsOptions}}' bindchange='bindFundsChange' disabled='{{cardSaved || isTreat}}'>
               <view class='weui-select weui-select_in-select-after'>{{fundsOptions[fundsIndex]}}</view>
             </picker>
           </view>
         </view>
       </view>
 
-      <view class='weui-btn-area' wx:if='{{!cardSaved}}'>
+      <view class='weui-btn-area' wx:if='{{isBeggar}}'>
+        <button class='weui-btn' type='primary' open-type='share' disabled='{{!title || !content}}'>乞讨</button>
+        <view class='weui-toptips weui-toptips_warn' hidden='{{title && content}}'>请输入标题及请求内容</view>  
+      </view>
+
+      <view class='weui-btn-area' wx:elif='{{!cardSaved}}'>
         <button class='weui-btn' type='primary' formType='submit'>完成</button>
       </view>
       

@@ -28,7 +28,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 1,
+			"current": 2,
 			"list": [
 				{
 					"id": -1,
@@ -40,8 +40,15 @@
 					"id": 1,
 					"name": "卡片进入",
 					"pathName": "pages/info/info",
-					"query": "id=XF_dTN7E7L4w8K6F&mode=invite",
+					"query": "id=XGLLlZT75u222G_F&mode=invite",
 					"scene": 1007
+				},
+				{
+					"id": 2,
+					"name": "消息",
+					"pathName": "pages/msg/msg",
+					"query": "type=beggar&id=ok2X64mJ3TMGzpqPenHfs6RW9lCE&title=%E6%B5%8B%E8%AF%95&content=%E6%B5%8B%E8%AF%95%E4%B8%80%E4%B8%8B",
+					"scene": null
 				}
 			]
 		}

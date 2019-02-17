@@ -15,7 +15,12 @@ App({
     }
     app.homePage = '/' + options.path + (opts.length == 0 ? '' : ('?' + opts.join('&')))
 
-    wx.cloud.init()
+    if (wx.cloud) {
+      wx.cloud.init({
+        env: 'playup-c4b115'
+      })
+    }
+    
     let userInfo = wx.getStorageSync(config.storage.userInfo)
     if (userInfo !== '') {
       app.setUserInfo(userInfo)

@@ -1,4 +1,4 @@
-// page/accept/accept.js
+// pages/msg.js
 Page({
 
   /**

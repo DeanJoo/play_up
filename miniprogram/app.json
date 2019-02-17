@@ -3,7 +3,8 @@
     "pages/list/list",
     "pages/info/info",
     "pages/add/add",
-    "pages/accept/accept"
+    "pages/accept/accept",
+    "pages/msg/msg"
   ],
   "window": {
     "backgroundColor": "#66f9cf",

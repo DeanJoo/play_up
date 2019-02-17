@@ -35,6 +35,10 @@ Page({
                   avatarUrl: data.avatarUrl
                 }
                 app.saveUserInfo(user)
+              } else {
+                page.setData({
+                  accepted: false,
+                })
               }
             })
           })
@@ -43,11 +47,13 @@ Page({
             accepted: false,
           })
         }
+        wx.hideLoading()
       },
       fail: err => {
         page.setData({
           msg: '无法获取用户授权信息，暂时无法为您服务'
         })
+        wx.hideLoading()
       }
     })
   },

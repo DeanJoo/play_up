@@ -93,8 +93,8 @@ Page({
           sponsor: sponsor,
           guests: guests,
           markers: markers,
-          isSponsor: sponsor._openId === app.userInfo._openId,
-          joined: guests.findIndex(n => n._openId === app.userInfo._openId) !== -1
+          isSponsor: sponsor._openid === app.userInfo.openId,
+          joined: guests.findIndex(n => n._openid === app.userInfo.openId) !== -1
         })
       })
     }
@@ -143,16 +143,22 @@ Page({
    * 用户点击转发按钮
    */
   onShareAppMessage: function () {
-    let card = {
-      path: '/pages/info/info?id=' + this.id + '&mode=invite',
-      imageUrl: '/images/card.png'
-    }
+    let id = app.userInfo.openId
+    let card = {}
+    card.imageUrl = '/images/card.png'
     if (this.data.isSponsor) {
       card.title = this.data.title
+      card.path = '/pages/info/info?id=' + this.id + '&mode=invite'
     } else if (this.data.joined) {
-      card.title = '算我一个'
+      let content = '算我一个'
+      card.title = content
+      card.path = '/pages/msg/msg?id=' + encodeURIComponent(id)
+        + '&content=' + encodeURIComponent(content)
     } else {
-      card.title = '不去'
+      let content = '不去' 
+      card.title = content
+      card.path = '/pages/msg/msg?id=' + encodeURIComponent(id)
+        + '&content=' + encodeURIComponent(content)
     }
     
     return card

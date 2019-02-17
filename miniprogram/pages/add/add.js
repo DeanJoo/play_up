@@ -25,14 +25,16 @@ Page({
     startDate: '',
     currentTime: '',
     fundsIndex: 0,
-    fundsOptions: ['老子请了', 'A吧'],
+    fundsOptions: ['老子请了', 'A吧', '抱大腿'],
     addressKey: '',
     markers: [],
-    addressSearchShowed: false,
     showTopTips: false,
+    showAddressList: false,
     topTips: '',
     commonPlaces: [],
-    cardSaved: false
+    cardSaved: false,
+    isBeggar: false,
+    isTreat: false
   },
 
   /**
@@ -40,6 +42,13 @@ Page({
    */
   onLoad: function (options) {
     let page = this
+
+    let type = options.type
+    type = type ? type : ''
+    let guestId = options.guest
+    guestId = guestId ? guestId : ''
+    page.guestId = guestId
+
     // 获取当前日期
     let now = [
       moment().format(config.format.date),
@@ -47,31 +56,26 @@ Page({
     ]
 
     // 获取常用信息
-    wx.getStorage({
-      key: 'common_info',
-      success: res => {
-        page.commonMarkers = res.data.markers 
-        let commonPlaces = page.commonMarkers.slice(0, 6).map(item => {
-          return item.title
-        })
-        page.setData({
-          title: res.data.title,
-          content: res.data.content,
-          contentCount: res.data.content.length,
-          currentDate: now[0],
-          startDate: now[0],
-          currentTime: res.data.time,
-          commonPlaces: commonPlaces
-        })
-      },
-      fail: err => {
-        page.setData({
-          currentDate: now[0],
-          startDate: now[0],
-          currentTime: now[1]
-        })
-      }
-    })
+    let data = {}
+    data.currentDate = now[0]
+    data.startDate = now[0]
+    data.currentTime = now[1]
+    data.isTreat = type === 'treat'
+
+    let info = wx.getStorageSync('common_info')
+    if (info) {
+      page.commonMarkers = info.markers
+      let commonPlaces = page.commonMarkers.slice(0, 6).map(item => {
+        return item.title
+      })
+      data.title = info.title
+      data.content = info.content
+      data.contentCount = info.content.length
+      data.currentTime = info.time
+      data.commonPlaces = commonPlaces
+    }
+    page.setData(data)
+    console.log(data)
 
     // 初始化地图服务
     amap = new amapFile.AMapWX({
@@ -122,11 +126,23 @@ Page({
    */
   onShareAppMessage: function () {
     let card = {
-      title: this.data.title,
-      path: '/pages/info/info?id=' + this.cardID + '&mode=invite',
-      imageUrl: '/images/card.png'
+      title: this.data.title
     }
 
+    if (this.data.isBeggar) {
+      let id = app.userInfo.openId
+      let title = this.data.title
+      let content = this.data.content
+
+      card.path = '/pages/msg/msg?type=beggar&id=' + encodeURIComponent(id) 
+        + '&title=' + encodeURIComponent(title) 
+        + '&content=' + encodeURIComponent(content)
+      card.imageUrl = '/images/beggar.jpg'
+    } else {
+      card.path = '/pages/info/info?id=' + this.cardID + '&mode=invite',
+      card.imageUrl = '/images/card.png'
+    }
+    console.log(card)
     return card
   },
 
@@ -158,10 +174,20 @@ Page({
   },
 
   /**
+   * 标题发生变化
+   */
+  bindTitleChange: function (e) {
+    this.setData({
+      title: e.detail.value
+    })
+  },
+
+  /**
    * 活动内容发生变化
    */
   bindContentChange: function (e) {
     this.setData({
+      content: e.detail.value,
       contentCount: e.detail.value.length
     })
   },
@@ -188,9 +214,24 @@ Page({
    * 用户选择新的经费出处
    */
   bindFundsChange: function (e) {
-    this.setData({
-      fundsIndex: e.detail.value
-    })
+    let index = e.detail.value
+    let data = {
+      fundsIndex: index
+    }
+
+    if (index === '2') {
+      data.isBeggar = true
+      this.oldTitle = this.data.title
+      this.oldContent = this.data.content
+      data.title = ''
+      data.content = ''
+    } else {
+      data.isBeggar = false
+      data.title = this.oldTitle
+      data.content = this.oldContent
+    }
+    
+    this.setData(data)
   },
 
   /**
@@ -207,7 +248,7 @@ Page({
    */
   searchAddress: function (e) {
     var page = this
-    var address = e.detail.value
+    var address = page.data.addressKey
 
     amap.getInputtips({
       keywords: address,
@@ -217,7 +258,8 @@ Page({
       success: function (data) {
         if (data && data.tips) {
           page.setData({
-            addressTips: data.tips
+            addressTips: data.tips,
+            showAddressList: true
           })
         }
       }
@@ -244,7 +286,17 @@ Page({
     page.setData({
       markers: markers,
       location: location,
-      addressSearchShowed: false
+      showAddressList: false
+    })
+  },
+
+  /**
+   * 隐藏地址列表
+   */
+  switchAddressList: function (e) {
+    let state = this.data.showAddressList
+    this.setData({
+      showAddressList: !state
     })
   },
 
@@ -285,21 +337,19 @@ Page({
   },
 
   /**
-   * 用户点击搜索按钮
+   * 显示顶端提示信息
    */
-  showAddressSearch: function (e) {
-    this.setData({
-      addressSearchShowed: true
+  showTips: function (msg) {
+    let page = this
+    page.setData({
+      topTips: msg,
+      showTopTips: true
     })
-  },
-
-  /**
-   * 用户点击取消搜索按钮
-   */
-  hideAddressSearch: function (e) {
-    this.setData({
-      addressSearchShowed: false
-    })
+    setTimeout(function () {
+      page.setData({
+        showTopTips: false
+      });
+    }, 5000);
   },
 
   /**
@@ -338,17 +388,10 @@ Page({
         }
       })
     } else {
-      page.setData({
-        topTips: '请在地图上选择一个位置标记以便小伙伴们导航邀约之地',
-        showTopTips: true
-      })
-      setTimeout(function () {
-        page.setData({
-          showTopTips: false
-        });
-      }, 5000);
+      page.showTips('请在地图上选择一个位置标记以便小伙伴们导航邀约之地')
       return
     }
+
     wx.showLoading({ title: '保存中……', mask: true })
     let card = {
       title: data.title,
@@ -359,6 +402,10 @@ Page({
       funds: page.data.fundsOptions[data.funds],
       location: this.data.location.join(','),
       guests: []
+    }
+
+    if (page.data.isTreat) {
+      card.guests.push(page.guestId)
     }
 
     let label = config.db.cardInfo

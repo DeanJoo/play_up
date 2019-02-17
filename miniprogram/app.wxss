@@ -1,8 +1,9 @@
 @import 'vendor/weui.wxss';
+@import 'vendor/font/iconfont.wxss';
 
 page{
     background-color: #F8F8F8;
-    font-size: 16px;
+    font-size: 20px;
     font-family: -apple-system-font,Helvetica Neue,Helvetica,sans-serif;
 }
 .page__hd {
@@ -24,7 +25,7 @@ page{
 .page__title button {
     display: inline;
     text-align: left;
-    font-size: 20px;
+    font-size: 26px;
     font-weight: 400;
 }
 
@@ -32,7 +33,26 @@ page{
     margin-top: 5px;
     color: #888888;
     text-align: left;
-    font-size: 14px;
+    font-size: 18px;
+}
+
+.weui-form-preview__value {
+    font-size: 18px
+}
+
+.weui-search-bar__search-btn {
+  margin-left: 10px;
+  line-height: 28px;
+  color: #0bb20c;
+  white-space: nowrap
+}
+
+.weui-toptips_info {
+  background-color: #b2b2b2
+}
+
+.text-center {
+  text-align: center;
 }
 
 .map-full {
@@ -43,7 +63,6 @@ page{
 .btn-select {
   padding-left: 0px;
   padding-right: 0px;
-  
 }
 
 .userinfo {
